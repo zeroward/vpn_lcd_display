@@ -58,13 +58,13 @@ def read_pivpn_config():
 
 
 def connection_monitor():
-    connections = 0
+    connections = -1 
     status_log = "/var/log/openvpn-status.log"
     with open(status_log) as f:
         for i in f.readlines():
             if "CLIENT_LIST" in i:
                 connections += 1
-    if connections == 0:
+    if connections <= 0:
         return "No Connections"
     elif connections != 0:
         return str(connections)
@@ -75,16 +75,19 @@ mylcd = I2C_LCD_driver.lcd() # LCD Screen Object
 my_remote_ip = urlopen('http://ip.42.pl/raw').read() # Get Remote IP
 vpn_port, my_public_dns, my_local_ip = read_pivpn_config()
 display_dictionary = {
-        "PiVPN Display" : "Version .69",
+        "PiVPN Display" : "Version 1.0",
         "Local IP:" : my_local_ip,
         "Remote IP:" : my_remote_ip,
         "Public DNS:" : my_public_dns,
         "VPN Port:" : vpn_port,
         "VPN Connections:" : connection_monitor(),
 }
-sleep_wait = 5 # Global Sleep Timer
+sleep_wait = 10 # Global Sleep Timer
 
 def main():
+    print("PiVPN LCD Display Script")
+    print("By: Zeroward")
+    print("Display Initialized")
     connection_monitor()
     while True:
         for k,v in display_dictionary.items():
